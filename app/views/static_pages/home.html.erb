@@ -1,13 +1,68 @@
 <% if user_signed_in? %>
-<p>boo</p>
+
+
+<html>
+  <head>
+    <link rel="stylesheet" href="app/assets/stylesheets/style.css" media="screen" />
+  </head>
+  <body>
+  	<h1>hello</h1>
+    <%= image_tag "rails.png" %>
+    <div id="content"></div>
+    
+    <script id="book-template" type="text/x-handlebars-template">
+      <div class="info">
+        <h2>{{title}}</h2>
+        <h3>by {{author}}</h3>
+        <div class="body">
+          {{{description}}}
+          <a href="{{affiliate-link}}"><%= image_tag "{{cover-image}}" %></a>
+        </div>
+        <div class="nav">
+          <ul>
+            <li>back</li>
+            <li>kudos</li>
+            <li>next</li>
+          </ul>
+        </div>
+      </div>
+    </script>
+
+    <!-- Don't need jQuery for Tabletop, but using it for this example -->
+    <script type="text/javascript" src="app/assets/javascripts/handlebars.js"></script>
+    <script type="text/javascript" src="app/assets/javascripts/jquery.js"></script>
+    <script type="text/javascript" src="app/assets/javascripts/tabletop.js"></script>
+    <script type="text/javascript">
+      var public_spreadsheet_url = 'https://docs.google.com/spreadsheet/pub?key=0AjD_8Op5tS5sdERwQnZ6SElxYXBaanAxZmhKVkllRXc&output=html';
+
+      $(document).ready( function() {
+        Tabletop.init( { key: public_spreadsheet_url,
+                         callback: showInfo,
+                         parseNumbers: true } );
+      });
+        
+      function showInfo(data, tabletop) {
+        var source   = $("#book-template").html();
+        var template = Handlebars.compile(source);
+
+        $.each( tabletop.sheets("books").all(), function(i, cat) {
+          var html = template(cat);
+          $("#content").append(html);
+        });
+      }
+        
+    </script>
+  </body>
+</html>
+
+
+
 <% else %>
 <div class="center hero-unit">
-    <h1>Welcome to One Month Rails</h1>
+    <h1>Bottleist</h1>
 
     <h2>
-      You've found the home page for the
-      <a href="http://omrails.com/">One Month Rails</a>
-      first application.
+      You've come to a place where books are judged by their covers.
     </h2>
 
     <%= link_to "Sign up now!", new_user_registration_path, 
